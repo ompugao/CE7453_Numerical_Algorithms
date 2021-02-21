@@ -5,6 +5,7 @@ from exception import CBIException
 from waypoints import Waypoints
 import logging
 log = logging.getLogger(__name__)
+log.setLevel(logging.DEBUG)
 
 class BSplineCurve(object):
     def __init__(self, control_points = None, knot_vector = None):
@@ -42,11 +43,16 @@ class BSplineInterpolationSolver(object):
         A = self._compute_A(ts, knots)
         n = len(waypoints) - 1
         np.set_printoptions(suppress=True,precision=2)
-        print(A)
+        log.debug("A=")
+        log.debug(A)
         b = np.zeros(n+3)
         b[1:n+2] = waypoints.points[:,0] #x
+        log.debug("bx=")
+        log.debug(b)
         px = np.linalg.solve(A, b)
         b[1:n+2] = waypoints.points[:,1] #y
+        log.debug("by=")
+        log.debug(b)
         py = np.linalg.solve(A, b)
         control_points = np.hstack([px.reshape([len(px), 1]), py.reshape([len(py), 1])])
         curve = BSplineCurve(control_points=control_points, knot_vector=knots)
@@ -82,10 +88,8 @@ class BSplineInterpolationSolver(object):
 
         for j in range(0, 3):
             A[0, j] = self._basis_func_2diff(j, ts[0], knots)
-            print(A[0, j])
         for j in range(n, n+3):
             A[n+2, j] = self._basis_func_2diff(j, ts[n], knots)
-            print(A[n+2, j])
 
         return A
 

@@ -22,7 +22,7 @@ def test_bspline_interpolation_solver():
     print(ts)
     print(knots)
 
-from scipy import interpolate
+import scipy
 from matplotlib import pyplot as plt
 
 def plot_waypoints(waypoints):
@@ -37,7 +37,7 @@ def test_plot_curve():
     curve = solver.solve(waypoints)
     plot_waypoints(waypoints)
     plot_control_points(curve)
-    x, y = interpolate.splev(np.arange(0, 1.01, 0.01), (curve.knot_vector, curve.control_points.T, 3))
+    x, y = scipy.interpolate.splev(np.arange(0, 1.01, 0.01), (curve.knot_vector, curve.control_points.T, 3))
     plt.plot(x, y, linestyle='-', label='b-spline interpolation')
     plt.grid()
     plt.legend()
