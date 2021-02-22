@@ -141,15 +141,20 @@ if __name__ == '__main__':
     from utils import plot_waypoints, plot_control_points
     from scipy import interpolate
     import matplotlib.pyplot as plt
+    logging.basicConfig(format='[%(levelname)s][%(name)s:%(funcName)s]|%(filename)s:%(lineno)d| %(message)s', level=logging.DEBUG)
+
     parser = argparse.ArgumentParser()
     parser.add_argument('--inputfile', type=str, default='waypoints.txt')
+    parser.add_argument('--outputfile', type=str, default='cubicinterpolation.txt')
+    parser.add_argument('--samplingstep', type=float, default=0.01)
     args = parser.parse_args()
     solver = BSplineInterpolationSolver()
     waypoints = Waypoints(filename=args.inputfile)
     curve = solver.solve(waypoints)
     plot_waypoints(waypoints)
     plot_control_points(curve)
-    x, y = interpolate.splev(np.arange(0, 1.01, 0.01), (curve.knot_vector, curve.control_points.T, 3))
+    curve.write_file(args.outputfile)
+    x, y = interpolate.splev(np.arange(0, 1.0+args.samplingstep, args.samplingstep), (curve.knot_vector, curve.control_points.T, 3))
     plt.plot(x, y, linestyle='-', label='b-spline interpolation')
     plt.grid()
     plt.axis('equal')
