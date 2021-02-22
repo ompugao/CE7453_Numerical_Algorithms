@@ -3,7 +3,7 @@ import numpy as np
 
 class Waypoints(object):
     def __init__(self, filename=None):
-        self.points = np.array([[]])
+        self.points = np.array([])
 
         if filename is not None:
             self.read_file(filename)
@@ -22,6 +22,9 @@ class Waypoints(object):
                 x, y = map(float, line.rstrip().split(' '))
                 points.append([x, y])
             self.points = np.array(points)
+
+    def write_file(self, filename):
+        np.savetxt(filename, self.points, delimiter=' ')
 
 
 if __name__ == '__main__':
