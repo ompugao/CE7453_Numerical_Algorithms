@@ -120,7 +120,6 @@ class CBIMainWindow(QMainWindow):
         #self.axes.axis('equal')
         self.axes.set_aspect('equal', 'box')
         self.axes.set(xlim=(-3, 3), ylim=(-3, 3))
-        self.axes.legend()
         self.canvas.draw()
 
     def _draw_curve(self,):
@@ -134,6 +133,7 @@ class CBIMainWindow(QMainWindow):
         self.axes.set_ylabel('y', horizontalalignment='center', fontsize=23)
         self.axes.plot(x, y, color='green', linestyle='-', label='b-spline interpolation')
         self._plot_control_points(curve)
+        self.axes.legend()
         self.canvas.draw()
 
     def _plot_waypoints(self, waypoints):
