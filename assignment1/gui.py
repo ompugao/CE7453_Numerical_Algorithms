@@ -89,9 +89,17 @@ class CBIMainWindow(QMainWindow):
 
         self.statusBar().showMessage('Initialization Done')
 
+        self._draw_curve_callback = None
+        self.canvas_size = dict(xlim=(-3, 3), ylim=(-3, 3))
         self._reset_canvas()
         self.interactioninfo = InteractionInfo()
         self._connect()
+
+    def set_draw_curve_callback(self, callback):
+        self._draw_curve_callback = callback
+
+    def set_canvas_size(self, xlim, ylim):
+        self.canvas_size = dict(xlim=xlim, ylim=ylim)
 
     def _clear_points(self,):
         self.waypoints = Waypoints()
@@ -119,7 +127,7 @@ class CBIMainWindow(QMainWindow):
         self.axes.grid()
         #self.axes.axis('equal')
         self.axes.set_aspect('equal', 'box')
-        self.axes.set(xlim=(-3, 3), ylim=(-3, 3))
+        self.axes.set(xlim=self.canvas_size['xlim'], ylim=self.canvas_size['ylim'])
         self.canvas.draw()
 
     def _draw_curve(self,):
@@ -133,6 +141,10 @@ class CBIMainWindow(QMainWindow):
         self.axes.set_ylabel('y', horizontalalignment='center', fontsize=23)
         self.axes.plot(x, y, color='green', linestyle='-', label='b-spline interpolation')
         self._plot_control_points(curve)
+
+        if callable(self._draw_curve_callback):
+            self._draw_curve_callback(self)
+
         self.axes.legend()
         self.canvas.draw()
 
@@ -187,6 +199,7 @@ class CBIMainWindow(QMainWindow):
         self.canvas.mpl_disconnect(self.cidpress)
         self.canvas.mpl_disconnect(self.cidrelease)
         self.canvas.mpl_disconnect(self.cidmotion)
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     win = CBIMainWindow()
