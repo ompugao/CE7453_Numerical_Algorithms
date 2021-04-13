@@ -109,7 +109,40 @@ def question3():
     plt.legend()
     plt.show()
 
+def question4():
+    n = 8
+    u = np.linspace(0, 1.0, n)
+    x = x_func(u)
+    y = y_func(u)
+    # fft is wrong?
+    wx = np.fft.fft(x)
+    wy = np.fft.fft(y)
+    def genP(w):
+        def P(u):
+            # NOTE: n must be even 
+            a = w.real
+            b = w.imag
+            return 1.0/np.sqrt(n) * \
+                (a[0] + np.sum([(a[k] + a[n-k])*np.cos(2*np.pi*k*u) - \
+                (b[k] - b[n-k])*np.sin(2*np.pi*k*u) for k in range(1, int(n/2)-1+1)]) \
+                + a[int(n/2)]*np.cos(2*np.pi*n/2*u))
+        return P
+    Px = genP(wx)
+    Py = genP(wy)
+
+    numsteps = 10000
+    uplot = np.linspace(0, 1.0, numsteps)
+    x = x_func(uplot)
+    y = y_func(uplot)
+    xp = Px(uplot)
+    yp = Py(uplot)
+    plt.plot(x, y, '-')
+    plt.plot(xp, yp, '-')
+    plt.axis('equal')
+    plt.show()
+
 if __name__ == '__main__':
     #question1()
     #question2()
-    question3()
+    #question3()
+    question4()
