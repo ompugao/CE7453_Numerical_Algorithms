@@ -17,6 +17,13 @@ class BSplineCurve(object):
         if self.knot_vector is None:
             self.knot_vector = []
 
+    def __repr__(self):
+        s = ''
+        s += 'degree: '+str(self.degree)+'\n'
+        s += 'control points: '+str(self.control_points)+'\n'
+        s += 'knot vector: '+str(self.knot_vector)+'\n'
+        return s
+
     def write_file(self, filename):
         with open(filename, 'w') as f:
             f.write('%d\n'%self.degree)
@@ -61,9 +68,9 @@ class BSplineInterpolationSolver(object):
     def _compute_parameterization(self, waypoints, type = InterpolationParameterizationType.CHORDLENGTH):
         ts = []
         n = len(waypoints) - 1
-        if type == InterpolationParameterizationType.CHORDLENGTH:
+        if type == InterpolationParameterizationType.UNIFORM:
             ts = np.linspace(0, 1, n+1)
-        elif type == InterpolationParameterizationType.UNIFORM:
+        elif type == InterpolationParameterizationType.CHORDLENGTH:
             ts.append(0)
             z = waypoints.points.copy()
             z[1:] -= z[:-1].copy()
